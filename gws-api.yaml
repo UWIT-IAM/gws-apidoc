@@ -1,15 +1,15 @@
 openapi: 3.0.0
 servers:
-  #- url: 'https://iam-ws.u.washington.edu/group_sws/v3'
-  #  description: Production server - UWCA certificate
-  # - url: 'https://groups.uw.edu/group_sws/v3'
-  #   description: Production server - InCommon certificate
+  - url: 'https://iam-ws.u.washington.edu/group_sws/v3'
+    description: Production server - UWCA certificate
+  - url: 'https://groups.uw.edu/group_sws/v3'
+    description: Production server - InCommon certificate
   #- url: 'https://eval.groups.uw.edu/group_sws/v3'
   #  description: Evaluation server - InCommon certificate
   - url: 'https://dev.groups.uw.edu/group_sws/v3'
     description: Development server - InCommon certificate
 info:
-  version: 2.2.0
+  version: 3.0.0
   title: University of Washington Group Service API
   termsOfService: 'http://www.washington.edu/online/terms/'
   contact:
@@ -19,11 +19,13 @@ info:
     name: License
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   description: >
-    *API and underlying service in development* (revision 04/12/2018.0)
 
-    * See the wiki article [Group Service v3 API](https://wiki.cac.washington.edu/x/ygf-B) for an introduction the the Group Service.
+    * This describes the /v3/ representations.  For /v2/ (xml) representations see the [v2 documentation](https://wiki.cac.washington.edu/x/ESBy).
+
+    * See the wiki article [Group Service API](https://wiki.cac.washington.edu/x/hIIqBQ) for an introduction the the Group Service.
       The page includes access and authentication instructions.
-    * View the [yaml source](https://urizen.s.uw.edu/gwsapi-yaml) of this document.
+
+    * View the [yaml source](https://iam-tools.u.washington.edu/apis/gws/api.yaml) of this document.
 
 
 #security:
@@ -33,6 +35,8 @@ tags:
     description: Group information--except membership
   - name: Membership
     description: Group membership information
+  - name: Searches
+    description: Group and member searches
 paths:
   '/group/{groupid}':
     get:
@@ -63,6 +67,8 @@ paths:
           description: Group matches If-None-Match
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
     put:
       tags:
         - Groups
@@ -104,6 +110,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
         '412':
           $ref: '#/components/responses/412Error'
         '5xx':
@@ -132,6 +140,8 @@ paths:
           description: Group deleted
         '401':
           $ref: '#/components/responses/401Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
   '/groupMove/{groupid}':
     put:
@@ -165,6 +175,8 @@ paths:
           $ref: '#/components/responses/400Error'
         '401':
           $ref: '#/components/responses/401Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
 
   '/group/{groupid}/member':
@@ -200,6 +212,8 @@ paths:
           $ref: '#/components/responses/403Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
     put:
       tags:
         - Membership
@@ -225,6 +239,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
       requestBody:
         content:
           application/json:
@@ -269,8 +285,10 @@ paths:
           $ref: '#/components/responses/403Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
-  '/groups/{groupid}/member/{memberid}':
+  '/group/{groupid}/member/{memberid}':
     get:
       tags:
         - Membership
@@ -305,6 +323,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
     put:
       tags:
         - Membership
@@ -338,6 +358,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
     delete:
       tags:
         - Membership
@@ -358,6 +380,12 @@ paths:
             type: array
             items:
               type: string
+        - name: synchronized
+          in: query
+          required: false
+          description: do not complete request until ldaps updated (default does not wait)
+          schema:
+            type: string
       responses:
         '200':
           description: Delete successful
@@ -365,6 +393,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
   '/group/{groupid}/effective_member':
     get:
@@ -390,6 +420,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
   '/group/{groupid}/effective_member?view=count':
     get:
@@ -428,8 +460,10 @@ paths:
           $ref: '#/components/responses/403Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
-  '/groups/{groupid}/effective_member/{memberid}':
+  '/group/{groupid}/effective_member/{memberid}':
     get:
       tags:
         - Membership
@@ -464,6 +498,8 @@ paths:
           $ref: '#/components/responses/401Error'
         '404':
           $ref: '#/components/responses/404Error'
+        '406':
+          $ref: '#/components/responses/406Error'
 
   '/group/{groupid}/affiliate/{affiliate}':
     get:
@@ -498,6 +534,8 @@ paths:
                 $ref: '#/components/schemas/AffiliateResponse'
         '404':
           description: Affiliate does not exist
+        '406':
+          $ref: '#/components/responses/406Error'
     put:
       tags:
         - Groups
@@ -563,6 +601,8 @@ paths:
           description: Invalid affiliate representation
         '401':
           description: No permission
+        '406':
+          $ref: '#/components/responses/406Error'
 
     delete:
       tags:
@@ -592,6 +632,9 @@ paths:
           description: Affiliate deleted
         '401':
           description: No premission
+        '406':
+          $ref: '#/components/responses/406Error'
+
   '/group/{groupid}/history':
     get:
       tags:
@@ -653,11 +696,13 @@ paths:
           description: No permission
         '404':
           description: Group not found
+        '406':
+          $ref: '#/components/responses/406Error'
+
   /search:
     get:
       tags:
-        - Groups
-        - Membership
+        - Searches
       description: >
         Finds groups.  Parameters specify matching conditions, which are ANDed to generate the search result.
  
@@ -740,6 +785,9 @@ paths:
           description: No permission
         '404':
           description: Group not found
+        '406':
+          $ref: '#/components/responses/406Error'
+
 components:
 #  securitySchemes:
 #    basicAuth:
@@ -836,13 +884,13 @@ components:
         classification:
           description: >-
             Classification of membership. u=unclassified, r=restricted,
-            c=confidnetial, missing=no classification
+            c=confidential, missing=no classification
           type: string
           enum:
             - u
             - r
             - c
-        dependson:
+        dependsOn:
           description: Membership dependency group
           type: string
           example: uw_employee
@@ -1027,14 +1075,14 @@ components:
                 Classification of membership.
                   * **u**: unclassified
                   * **r**: restricted,
-                  * **c**: confidnetial
+                  * **c**: confidential
                   * *missing*: no classification
               type: string
               enum:
                 - u
                 - r
                 - c
-            dependson:
+            dependsOn:
               description: Membership dependency group
               type: string
               example: uw_employee
@@ -1576,6 +1624,7 @@ components:
             - 400
             - 402
             - 404
+            - 406
             - 409
             - 412
             - 5xx
@@ -1634,9 +1683,11 @@ components:
                       enum:
                         - 400
                     detail:
-                      type: string
-                      description: Explaination of cause of error
-                      example: Invalid group name
+                      items:
+                        id:
+                        type: string
+                        description: Explaination of cause of error
+                        example: Invalid group name
 
     401Error:
       description: Unauthorized
@@ -1657,9 +1708,11 @@ components:
                       enum:
                         - 401
                     detail:
-                      type: string
-                      description: Explaination of cause of error
-                      example: No permission to read membership
+                      items:
+                        id:
+                        type: string
+                        description: Explaination of cause of error
+                        example: No permission to read membership
     403Error:
       description: Forbidden
       content:
@@ -1669,6 +1722,7 @@ components:
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+
               errors:
                 type: array
                 items:
@@ -1678,7 +1732,14 @@ components:
                       type: integer
                       enum:
                         - 403
-                      example: Group is google enabled
+                    detail:
+                      items:
+                        id:
+                        type: string
+                        description: Explaination of cause of error
+                        example: Group is google enabled
+
+
     404Error:
       description: Resource not found
       content:
@@ -1688,6 +1749,7 @@ components:
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+
               errors:
                 type: array
                 items:
@@ -1697,10 +1759,13 @@ components:
                       type: integer
                       enum:
                         - 404
-                  detail:
-                    type: string
-                    description: Explaination of cause of error
-                    example: The group does not exist
+                    detail:
+                      items:
+                        id:
+                        type: string
+                        description: Explaination of cause of error
+                        example: The group does not exist
+
     405Error:
       description: Method not allowed
       content:
@@ -1720,9 +1785,14 @@ components:
                       enum:
                         - 405
                     detail:
-                      type: string
-                      description: Explaination of cause of error
-                      example: Method not allowed
+                      items:
+                        id:
+                        type: string
+                        description: Explaination of cause of error
+
+    406Error:
+      description: Not Acceptable (Accept or Content-type not application/json)
+
     412Error:
       description: Conflict
       content:
@@ -1742,8 +1812,11 @@ components:
                       enum:
                         - 412
                     detail:
-                      type: string
-                      description: Incorrect ETag
+                      items:
+                        id:
+                        type: string
+                        description: Incorrect ETag
+
     5xxError:
       description: Unknown server errror
 

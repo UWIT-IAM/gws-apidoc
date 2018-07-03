@@ -1,5 +1,6 @@
 # gws-apidoc
 
-This is yaml source for the GWS 2.2 service.
+This is OpenAPI 3 source for the University of Washington's Group Service, version /v3/
+
 
 
