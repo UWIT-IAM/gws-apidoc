@@ -4,12 +4,12 @@ servers:
     description: Production server - UWCA certificate
   - url: 'https://groups.uw.edu/group_sws/v3'
     description: Production server - InCommon certificate
-  #- url: 'https://eval.groups.uw.edu/group_sws/v3'
-  #  description: Evaluation server - InCommon certificate
+  - url: 'https://eval.groups.uw.edu/group_sws/v3'
+    description: Evaluation server - InCommon certificate
   - url: 'https://dev.groups.uw.edu/group_sws/v3'
     description: Development server - InCommon certificate
 info:
-  version: 3.0.0
+  version: 2.3.1
   title: University of Washington Group Service API
   termsOfService: 'http://www.washington.edu/online/terms/'
   contact:
@@ -20,7 +20,9 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   description: >
 
-    * This describes the /v3/ representations.  For /v2/ (xml) representations see the [v2 documentation](https://wiki.cac.washington.edu/x/ESBy).
+    * This describes the /v3/ representations for Groups Service version 2.3.1.
+
+    * For /v2/ (xml) representations see the [v2 documentation](https://wiki.cac.washington.edu/x/ESBy).
 
     * See the wiki article [Group Service API](https://wiki.cac.washington.edu/x/hIIqBQ) for an introduction the the Group Service.
       The page includes access and authentication instructions.
@@ -53,12 +55,22 @@ paths:
             type: string
         - name: If-None-Match
           in: header
-          description: Match nonce
+          description: Match nonce from GET ETag header
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
       responses:
         '200':
           description: The requested Group
+          headers:
+            ETag:
+              schema:
+                type: integer
+              description: Represents the current 'state' of the resource.  For If-Match, If-None-Match
           content:
             application/json:
               schema:
@@ -84,18 +96,32 @@ paths:
         - name: synchronized
           in: query
           required: false
-          description: do not complete request until ldaps updated (default does not wait)
+          description: Do not complete request until ldaps updated (default does not wait).
           schema:
             type: string
-        - name: If-None-Match
+        - name: If-Match
           in: header
-          description: Match nonce
-          required: false
+          description: Match nonce from GET ETag header. Use '*' to match any resource.  Required to update existing groups.
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
+        - name: Content-type
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
       responses:
         '200':
           description: The updated group
+          headers:
+            ETag:
+              schema:
+                type: integer
+              description: Represents the current 'state' of the resource.  For If-Match, If-None-Match
           content:
             application/json:
               schema:
@@ -135,9 +161,40 @@ paths:
           required: true
           schema:
             type: string
+        - name: If-Match
+          in: header
+          description: Match nonce from GET ETag header. Use '*' to match any resource.
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Group deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - schemas
+                properties:
+                  schemas:
+                    $ref: '#/components/schemas/GroupSchema'
+                  meta:
+                    $ref: '#/components/schemas/ErrorMeta'
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: integer
+                          enum:
+                            - 200
+                        notFound:
+                          type: array
+                          items:
+                            id:
+                            type: string
         '401':
           $ref: '#/components/responses/401Error'
         '406':
@@ -199,6 +256,11 @@ paths:
           description: handle request via the registry (default is ldap cache)
           schema:
             type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           description: An array of members of the group
@@ -232,6 +294,16 @@ paths:
           description: do not complete request until ldaps updated (default does not wait)
           schema:
             type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
+        - name: Content-type
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           $ref: '#/components/responses/200ErrorM'
@@ -246,7 +318,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PutMembership'
-        description: representation of the group
+        description: representation of the membership
 
   '/group/{groupid}/member?view=count':
     get:
@@ -270,6 +342,11 @@ paths:
           in: query
           required: false
           description: handle request via the registry (default is ldap cache)
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
       responses:
@@ -312,6 +389,11 @@ paths:
           description: handle request via the registry (default is ldap cache)
           schema:
             type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           description: An array with the requested member of the group
@@ -349,6 +431,16 @@ paths:
           in: query
           required: false
           description: do not complete request until ldaps updated (default does not wait)
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
+        - name: Content-type
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
       responses:
@@ -409,6 +501,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           description: An array of members of the group
@@ -445,6 +542,11 @@ paths:
           in: query
           required: false
           description: handle request via the registry (default is ldap cache)
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
       responses:
@@ -487,6 +589,11 @@ paths:
           description: handle request via the registry (default is ldap cache)
           schema:
             type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           description: An array with the requested member of the group
@@ -525,6 +632,11 @@ paths:
               - google
               - email
               - radius
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           description: The requested affiliateion
@@ -581,6 +693,16 @@ paths:
           in: query
           required: false
           description: do not complete request until ldaps updated (default does not wait)
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
+        - name: Content-type
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
 
@@ -685,6 +807,11 @@ paths:
           required: false
           schema:
             type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
+          schema:
+            type: string
       responses:
         '200':
           description: An array of history for the group
@@ -772,6 +899,11 @@ paths:
           in: query
           required: false
           description: handle request via the registry (default is ldap cache)
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          description: If specified, must be "application/json"
           schema:
             type: string
       responses:
@@ -1040,6 +1172,8 @@ components:
       properties:
         data:
           type: object
+          required:
+            - id
           properties:
             regid:
               description: 'Unique, opaque idenfier for the group'
@@ -1542,6 +1676,17 @@ components:
         url:
           description: Group url
           type: string
+        via:
+          type: array
+          description: For effective searches these represent the indirect group paths.
+          items:
+            type: string
+            description: Group id
+      required:
+        - regid
+        - id
+        - displayName
+        - url
     History:
       type: object
       properties:
@@ -1639,6 +1784,25 @@ components:
         enum:
           - 'urn:mace:washington.edu:schemas:groups:1.0'
       
+    ErrorMeta:
+      type: array
+      items:
+        type: object
+        properties:
+          resource:
+            type: string
+          version:
+            description: Version of the API
+            type: string
+            example: v3.0
+          id:
+            description: Id of the group
+            type: string
+          timestamp:
+            description: Response timestamp (milli-seconds from epoch)
+            type: long
+            example: 1214343146201
+
   responses:
     200ErrorM:
       description: Member put response
@@ -1646,9 +1810,13 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
@@ -1670,9 +1838,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
+              - errors
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
@@ -1695,9 +1868,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
+              - errors
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
@@ -1719,10 +1897,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
+              - errors
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
-
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
@@ -1746,10 +1928,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
+              - errors
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
-
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
@@ -1772,9 +1958,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
+              - errors
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
@@ -1799,9 +1990,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - schemas
+              - errors
             properties:
               schemas:
                 $ref: '#/components/schemas/GroupSchema'
+              meta:
+                $ref: '#/components/schemas/ErrorMeta'
               errors:
                 type: array
                 items:
