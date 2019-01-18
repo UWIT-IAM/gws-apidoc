@@ -29,7 +29,7 @@ info:
 
     * View the [yaml source](https://iam-tools.u.washington.edu/apis/gws/api.yaml) of this document.
 
-    * Document modified: 12/27/18
+    * Document modified: 01/18/19
 
 
 #security:
@@ -632,7 +632,7 @@ paths:
           schema:
             type: string
             enum:
-              - uwnetid
+              - netid
               - google
               - email
               - radius
@@ -671,7 +671,7 @@ paths:
           schema:
             type: string
             enum:
-              - uwnetid
+              - netid
               - google
               - email
               - radius
@@ -749,7 +749,7 @@ paths:
           schema:
             type: string
             enum:
-              - uwnetid
+              - netid
               - google
               - email
               - radius
@@ -1285,7 +1285,7 @@ components:
           description: Affiliate name
           type: string
           enum:
-            - uwnetid
+            - netid
             - google
             - email
             - radius
@@ -1352,7 +1352,7 @@ components:
           description: Affiliate name
           type: string
           enum:
-            - uwnetid
+            - netid
             - google
             - email
             - radius
