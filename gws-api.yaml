@@ -29,7 +29,7 @@ info:
 
     * View the [yaml source](https://iam-tools.u.washington.edu/apis/gws/api.yaml) of this document.
 
-    * Document modified: 02/26/19
+    * Document modified: 02/26/19.1
 
 
 #security:
@@ -684,7 +684,7 @@ paths:
             enum:
               - active
               - inactive
-        - name: senders
+        - name: sender
           in: query
           description: >
              Authorized senders to the group
