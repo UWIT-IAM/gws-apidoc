@@ -983,7 +983,7 @@ components:
           description: 'Unique, opaque idenfier for the group'
           type: string
           example: a1681c3fcba3f54f759e6c9432004381
-        name:
+        id:
           description: id of the group - includes path
           type: string
           example: u_fox_browser6
@@ -1119,7 +1119,7 @@ components:
             $ref: '#/components/schemas/Entity'
       required:
         - regid
-        - name
+        - id
         - displayName
         - description
         - created
