@@ -1,15 +1,15 @@
 openapi: 3.0.0
 servers:
-  - url: 'https://iam-ws.u.washington.edu/group_sws/v3'
-    description: Production server - UWCA certificate
   - url: 'https://groups.uw.edu/group_sws/v3'
     description: Production server - InCommon certificate
   - url: 'https://eval.groups.uw.edu/group_sws/v3'
     description: Evaluation server - InCommon certificate
   - url: 'https://dev.groups.uw.edu/group_sws/v3'
     description: Development server - InCommon certificate
+  - url: 'https://iam-ws.u.washington.edu/group_sws/v3'
+    description: Production server - UWCA certificate (deprecated)
 info:
-  version: 2.3.1
+  version: 2.3.x
   title: University of Washington Group Service API
   termsOfService: 'http://www.washington.edu/online/terms/'
   contact:
@@ -20,7 +20,7 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   description: >
 
-    * This describes the /v3/ representations for Groups Service version 2.3.1.
+    * This describes the Group Service /v3/ representations (GWS 2.3.x).
 
     * For /v2/ (xml) representations see the [v2 documentation](https://wiki.cac.washington.edu/x/ESBy).
 
@@ -29,7 +29,7 @@ info:
 
     * View the [yaml source](https://iam-tools.u.washington.edu/apis/gws/api.yaml) of this document.
 
-    * Document modified: 02/26/19.1
+    * Document modified: 2019-11-25
 
 
 #security:
@@ -255,7 +255,11 @@ paths:
         - name: source=registry
           in: query
           required: false
-          description: handle request via the registry (default is ldap cache)
+          description: handle request via the registry (default is a fast response cache)
+
+
+            *This is a diagnostic tool.  Representations and availability may differ from those described here.*
+
           schema:
             type: string
         - name: Accept
@@ -343,7 +347,11 @@ paths:
         - name: source=registry
           in: query
           required: false
-          description: handle request via the registry (default is ldap cache)
+          description: handle request via the registry (default is a fast response cache)
+
+
+            *This is a diagnostic tool.  Representations and availability may differ from those described here.*
+
           schema:
             type: string
         - name: Accept
@@ -388,7 +396,11 @@ paths:
         - name: source=registry
           in: query
           required: false
-          description: handle request via the registry (default is ldap cache)
+          description: handle request via the registry (default is a fast response cache)
+
+
+            *This is a diagnostic tool.  Representations and availability may differ from those described here.*
+
           schema:
             type: string
         - name: Accept
@@ -545,7 +557,11 @@ paths:
         - name: source=registry
           in: query
           required: false
-          description: handle request via the registry (default is ldap cache)
+          description: handle request via the registry (default is a fast response cache)
+
+
+            *This is a diagnostic tool.  Representations and availability may differ from those described here.*
+
           schema:
             type: string
         - name: Accept
@@ -590,7 +606,11 @@ paths:
         - name: source=registry
           in: query
           required: false
-          description: handle request via the registry (default is ldap cache)
+          description: handle request via the registry (default is a fast response cache)
+
+
+            *This is a diagnostic tool.  Representations and availability may differ from those described here.*
+
           schema:
             type: string
         - name: Accept
@@ -691,7 +711,7 @@ paths:
 
              * if email affiliation: comma separated list of sender ids
 
-             * if google affiliation: one of 'none', 'all', 'members', 'uw'
+             * if google affiliation: one of 'none', 'all', 'member', 'uw'
 
           required: false
           type: string
@@ -905,7 +925,11 @@ paths:
         - name: source=registry
           in: query
           required: false
-          description: handle request via the registry (default is ldap cache)
+          description: handle request via the registry (default is a fast response cache)
+
+
+            *This is a diagnostic tool.  Representations and availability may differ from those described here.*
+
           schema:
             type: string
         - name: Accept
@@ -1677,11 +1701,8 @@ components:
         id:
           description: Group id
           type: string
-        displayName:
+        name:
           description: Groups's display name
-          type: string
-        url:
-          description: Group url
           type: string
         via:
           type: array
@@ -1692,8 +1713,7 @@ components:
       required:
         - regid
         - id
-        - displayName
-        - url
+        - name
     History:
       type: object
       properties:
