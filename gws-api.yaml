@@ -24,12 +24,12 @@ info:
 
     * For /v2/ (xml) representations see the [v2 documentation](https://wiki.cac.washington.edu/x/ESBy).
 
-    * See the wiki article [Group Service API](https://wiki.cac.washington.edu/x/hIIqBQ) for an introduction the the Group Service.
+    * See the wiki article [Group Service API](https://wiki.cac.washington.edu/x/hIIqBQ) for instructions and help with the Group Service.
       The page includes access and authentication instructions.
 
-    * View the [yaml source](https://iam-tools.u.washington.edu/apis/gws/api.yaml) of this document.
+    * The [yaml source](https://iam-tools.u.washington.edu/apis/gws/api.yaml) of this document.
 
-    * Document modified: 2019-11-25
+    * Document modified: 2020-01-29
 
 
 #security:
